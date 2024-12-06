@@ -1,6 +1,9 @@
 // components/FileUpload.tsx
 import { useState } from "react";
-import { storage } from "../firebase";
+// 아래 경로는 실제 firebase.ts 파일 위치에 따라 조정
+// firebase.ts가 src 폴더 바로 아래 있다면 "../firebase"가 맞음
+// firebase.ts가 src/lib 폴더 아래라면 "../lib/firebase"로 수정
+import { storage } from "../lib/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 interface FileUploadProps {
