@@ -1,13 +1,10 @@
 import styles from "./page.module.css";
 import DeleteButton from "./DeleteButton"; // 추가된 임포트
 
-export default async function PostPage({
-  params,
-}: {
-  params: { postId: string };
-}) {
-  // 절대 경로 대신 상대 경로 사용
-  const res = await fetch(`/api/posts/${params.postId}`, {
+export default async function PostPage({ params }: any) {
+  const { postId } = params as { postId: string };
+
+  const res = await fetch(`/api/posts/${postId}`, {
     cache: "no-store",
   });
 
@@ -54,7 +51,7 @@ export default async function PostPage({
       )}
 
       {/* 게시글 삭제 버튼 추가 */}
-      <DeleteButton postId={params.postId} />
+      <DeleteButton postId={postId} />
     </div>
   );
 }

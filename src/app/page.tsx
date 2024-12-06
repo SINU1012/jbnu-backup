@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import DepartmentSelector from "@/components/DepartmentSelector";
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList";
@@ -20,17 +21,16 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter(); // router 훅 사용
 
   // 서버 응답 처리용 헬퍼 함수
   const handleResponse = async (res: Response) => {
     if (!res.ok) {
-      // 에러 응답 시 HTML 또는 일반 텍스트일 수 있으므로 text로 받음
       const errorText = await res.text();
       console.error("Server Error Response:", errorText);
       return { error: "서버 요청에 실패했습니다." };
     }
 
-    // 정상 응답 -> JSON 파싱 시도
     const jsonData = await res.json();
     return jsonData;
   };
@@ -58,7 +58,6 @@ export default function Home() {
           setPosts(jsonData.data);
           setError(null);
         } else {
-          // data 필드가 없거나 예상치 못한 응답 형식
           console.error("Unknown response format:", jsonData);
           setError("알 수 없는 응답 형식입니다.");
           setPosts([]);
@@ -156,8 +155,8 @@ export default function Home() {
             <PostList
               posts={posts}
               onPostClick={(postId) => {
-                // 게시글 상세 페이지로 이동
-                window.location.href = `/posts/${postId}`;
+                // 게시글 상세 페이지로 이동 시 useRouter 사용
+                router.push(`/posts/${postId}`);
               }}
             />
           )}
