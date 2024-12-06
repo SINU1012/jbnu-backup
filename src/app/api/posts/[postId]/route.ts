@@ -4,9 +4,9 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
   request: Request,
-  { params }: { params: { postId: string } }
+  context: { params: { postId: string } }
 ) {
-  const { postId } = params;
+  const { postId } = context.params;
 
   try {
     const client = await clientPromise;
@@ -44,9 +44,9 @@ export async function GET(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { postId: string } }
+  context: { params: { postId: string } }
 ) {
-  const { postId } = params;
+  const { postId } = context.params;
 
   try {
     const client = await clientPromise;
