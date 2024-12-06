@@ -6,8 +6,7 @@ export default async function PostPage({
 }: {
   params: { postId: string };
 }) {
-  const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
-  const res = await fetch(`${baseURL}/api/posts/${params.postId}`, {
+  const res = await fetch(`/api/posts/${params.postId}`, {
     cache: "no-store",
   });
 
