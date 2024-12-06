@@ -1,0 +1,80 @@
+.container {
+  margin: 2rem auto;
+  max-width: 600px;
+  font-family: sans-serif;
+  background-color: var(--page-bg);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/* 전체 컨테이너 내부에 여백을 줘 페이지 전체가 부드럽게 감싸도록 함 */
+
+/* 공통 섹션 스타일 */
+.section {
+  background-color: var(--section-bg);
+  border: 1px solid var(--section-border);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+  overflow: hidden; /* 둥근 모서리 안에서 컨텐츠 모서리 정리 */
+}
+
+/* 섹션 헤더 (제목, "내용", "첨부파일" 등) */
+.sectionHeader {
+  background-color: var(--section-header-bg);
+  padding: 0.75rem 1rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--section-border);
+}
+
+/* 섹션 본문 */
+.sectionBody {
+  padding: 1rem;
+  color: var(--text-color);
+}
+
+/* 제목 박스는 다른 섹션들과 통일감 있게 사용 가능, 단 제목은 이미 H1 사용 */
+.title {
+  background-color: var(--section-bg);
+  border: 1px solid var(--section-border);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 0; /* 첫번째 섹션은 margin-top을 0으로 */
+  overflow: hidden;
+}
+
+.titleHeader {
+  background-color: var(--section-header-bg);
+  padding: 0.75rem 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-bottom: 1px solid var(--section-border);
+}
+
+.titleBody {
+  padding: 1rem;
+  line-height: 1.6;
+}
+
+/* 파일 목록 스타일 */
+.fileList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fileList li {
+  margin-bottom: 0.5rem;
+}
+
+.fileList a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.fileList a:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
+}

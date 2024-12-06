@@ -1,3 +1,5 @@
+// PostList.tsx (개선 후)
+// 수정 사항 없음. 필요 시 부서별 페이지에서 import해서 사용 가능.
 import React from "react";
 
 interface Post {
@@ -28,7 +30,6 @@ export default function PostList({ posts, onPostClick }: PostListProps) {
           <p className="text-gray-600 text-sm mb-2 line-clamp-2">
             {post.content}
           </p>
-
           {post.fileUrls.length > 0 && (
             <div className="flex gap-2 mb-2">
               <svg
@@ -49,7 +50,6 @@ export default function PostList({ posts, onPostClick }: PostListProps) {
               </span>
             </div>
           )}
-
           <div className="text-sm text-gray-400">
             {new Date(post.createdAt).toLocaleDateString()}
           </div>

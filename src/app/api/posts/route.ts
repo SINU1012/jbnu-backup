@@ -1,51 +1,81 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const department = searchParams.get("department");
 
-    const client = await clientPromise;
-    const db = client.db("인문대아카이브");
-
-    if (!department) {
+    if (!department || department.trim() === "") {
       return NextResponse.json(
-        { error: "부서를 지정해주세요." },
+        { error: "부서를 지정해주세요. (예: ?department=국어국문학과)" },
         { status: 400 }
       );
     }
 
-    const posts = await db
-      .collection("posts")
+    console.log("MongoDB 연결 시도...");
+    const client = await clientPromise;
+    const db = client.db("tlsdn1012");
+    const collection = db.collection("tlsdn1012");
+
+    console.log(`게시글 조회 중 (부서: ${department})`);
+    const posts = await collection
       .find({ department })
       .sort({ createdAt: -1 })
       .toArray();
 
-    return NextResponse.json(posts);
+    if (posts.length === 0) {
+      return NextResponse.json({
+        message: "검색된 게시글이 없습니다.",
+        data: [],
+      });
+    }
+
+    return NextResponse.json({
+      message: "게시글 조회 성공",
+      data: posts,
+    });
   } catch (error) {
     console.error("GET /api/posts 에러:", error);
     return NextResponse.json(
-      { error: "게시글을 불러오는데 실패했습니다." },
+      {
+        error: "게시글을 불러오는데 실패했습니다.",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // 필수 필드 검증
-    if (!body.department || !body.title || !body.content) {
+    if (!body.department) {
       return NextResponse.json(
-        { error: "필수 필드가 누락되었습니다." },
+        { error: "부서 정보가 누락되었습니다. (department 필수)" },
         { status: 400 }
       );
     }
 
+    if (!body.title) {
+      return NextResponse.json(
+        { error: "제목 정보가 누락되었습니다. (title 필수)" },
+        { status: 400 }
+      );
+    }
+
+    if (!body.content) {
+      return NextResponse.json(
+        { error: "내용 정보가 누락되었습니다. (content 필수)" },
+        { status: 400 }
+      );
+    }
+
+    console.log("MongoDB 연결 시도...");
     const client = await clientPromise;
-    const db = client.db("인문대아카이브");
+    const db = client.db("tlsdn1012");
+    const collection = db.collection("tlsdn1012");
 
     const post = {
       ...body,
@@ -53,12 +83,19 @@ export async function POST(request: Request) {
       updatedAt: new Date(),
     };
 
-    const result = await db.collection("posts").insertOne(post);
-    return NextResponse.json(result);
+    const result = await collection.insertOne(post);
+
+    return NextResponse.json({
+      message: "게시글 작성에 성공했습니다.",
+      data: { id: result.insertedId, ...post },
+    });
   } catch (error) {
     console.error("POST /api/posts 에러:", error);
     return NextResponse.json(
-      { error: "게시글 작성에 실패했습니다." },
+      {
+        error: "게시글 작성에 실패했습니다.",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }

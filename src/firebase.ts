@@ -1,23 +1,28 @@
-import { initializeApp, getApps } from "firebase/app";
-import { getStorage } from "firebase/storage";
+// src/lib/firebase.js
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBzwFUCejELEbp6viu0atfSiwdlJ9MU-Rg",
-  authDomain: "jbnu-humanities.firebaseapp.com",
-  projectId: "jbnu-humanities",
-  storageBucket: "jbnu-humanities.firebasestorage.app",
-  messagingSenderId: "745516028752",
-  appId: "1:745516028752:web:6e6beb3bf5a8b11c1fd255",
-  measurementId: "G-ZHWCTNQ62C",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-const storage = getStorage(app);
-
+let app;
 let analytics;
-if (typeof window !== "undefined") {
-  analytics = getAnalytics(app);
+
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+  if (typeof window !== "undefined") {
+    analytics = getAnalytics(app);
+  }
+} else {
+  app = getApp();
 }
 
-export { app, storage, analytics };
+export { app, analytics };
