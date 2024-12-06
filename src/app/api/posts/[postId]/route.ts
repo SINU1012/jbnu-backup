@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export async function GET(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { postId: string } }
 ) {
   const { postId } = params;
@@ -43,7 +43,7 @@ export async function GET(
 }
 
 export async function DELETE(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { postId: string } }
 ) {
   const { postId } = params;
