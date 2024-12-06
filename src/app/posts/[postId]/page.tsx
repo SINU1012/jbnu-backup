@@ -6,8 +6,8 @@ export default async function PostPage({
 }: {
   params: { postId: string };
 }) {
-  const baseURL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const res = await fetch(`${baseURL}/api/posts/${params.postId}`, {
+  // 절대 경로 대신 상대 경로 사용
+  const res = await fetch(`/api/posts/${params.postId}`, {
     cache: "no-store",
   });
 
