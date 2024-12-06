@@ -4,7 +4,10 @@ import DeleteButton from "./DeleteButton"; // 추가된 임포트
 export default async function PostPage({ params }: any) {
   const { postId } = params as { postId: string };
 
-  const res = await fetch(`/api/posts/${postId}`, {
+  // 환경 변수 또는 기본값을 사용한 절대 경로 설정
+  const baseURL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+  const res = await fetch(`${baseURL}/api/posts/${postId}`, {
     cache: "no-store",
   });
 
