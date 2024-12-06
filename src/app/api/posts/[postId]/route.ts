@@ -5,14 +5,21 @@ import { ObjectId } from "mongodb";
 export async function GET(request: Request, context: any) {
   const { postId } = context.params as { postId: string };
 
+  // postId가 ObjectId로 변환 불가능한 경우 바로 에러 반환
+  if (!ObjectId.isValid(postId)) {
+    return NextResponse.json(
+      { error: "잘못된 게시글 ID입니다." },
+      { status: 400 }
+    );
+  }
+
   try {
     const client = await clientPromise;
     const db = client.db("tlsdn1012");
     const collection = db.collection("tlsdn1012");
 
-    const query = ObjectId.isValid(postId)
-      ? { _id: new ObjectId(postId) }
-      : { _id: postId };
+    // query를 ObjectId 타입으로 확실히 지정
+    const query = { _id: new ObjectId(postId) };
     const post = await collection.findOne(query);
 
     if (!post) {
@@ -42,14 +49,19 @@ export async function GET(request: Request, context: any) {
 export async function DELETE(request: Request, context: any) {
   const { postId } = context.params as { postId: string };
 
+  if (!ObjectId.isValid(postId)) {
+    return NextResponse.json(
+      { error: "잘못된 게시글 ID입니다." },
+      { status: 400 }
+    );
+  }
+
   try {
     const client = await clientPromise;
     const db = client.db("tlsdn1012");
     const collection = db.collection("tlsdn1012");
 
-    const query = ObjectId.isValid(postId)
-      ? { _id: new ObjectId(postId) }
-      : { _id: postId };
+    const query = { _id: new ObjectId(postId) };
     const result = await collection.deleteOne(query);
 
     if (result.deletedCount === 0) {
