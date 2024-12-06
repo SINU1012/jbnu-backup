@@ -1,11 +1,7 @@
 import styles from "./page.module.css";
 import DeleteButton from "./DeleteButton"; // 추가된 임포트
 
-export default async function PostPage({
-  params,
-}: {
-  params: { postId: string };
-}) {
+export default function PostPage({ params }: { params: { postId: string } }) {
   const res = await fetch(`/api/posts/${params.postId}`, {
     cache: "no-store",
   });
