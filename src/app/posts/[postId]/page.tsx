@@ -6,9 +6,7 @@ export default async function PostPage({
 }: {
   params: { postId: string };
 }) {
-  const baseURL =
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    "https://jbnu-backup.vercel.app/posts/6752c554ab5e1f8c59fd66b7";
+  const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
   const res = await fetch(`${baseURL}/api/posts/${params.postId}`, {
     cache: "no-store",
   });
