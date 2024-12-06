@@ -2,11 +2,8 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export async function GET(
-  request: Request,
-  { params }: { params: Record<string, string> }
-) {
-  const { postId } = params;
+export async function GET(request: Request, context: any) {
+  const { postId } = context.params as { postId: string };
 
   try {
     const client = await clientPromise;
@@ -42,11 +39,8 @@ export async function GET(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: Record<string, string> }
-) {
-  const { postId } = params;
+export async function DELETE(request: Request, context: any) {
+  const { postId } = context.params as { postId: string };
 
   try {
     const client = await clientPromise;
