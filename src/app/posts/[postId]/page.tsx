@@ -1,11 +1,15 @@
 import styles from "./page.module.css";
 import DeleteButton from "./DeleteButton"; // 추가된 임포트
 
-export default async function PostPage({ params }: any) {
-  const { postId } = params as { postId: string };
-
-  const baseURL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const res = await fetch(`${baseURL}/api/posts/${postId}`, {
+export default async function PostPage({
+  params,
+}: {
+  params: { postId: string };
+}) {
+  const baseURL =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    "https://jbnu-backup.vercel.app/posts/6752c554ab5e1f8c59fd66b7";
+  const res = await fetch(`${baseURL}/api/posts/${params.postId}`, {
     cache: "no-store",
   });
 
@@ -52,7 +56,7 @@ export default async function PostPage({ params }: any) {
       )}
 
       {/* 게시글 삭제 버튼 추가 */}
-      <DeleteButton postId={postId} />
+      <DeleteButton postId={params.postId} />
     </div>
   );
 }
