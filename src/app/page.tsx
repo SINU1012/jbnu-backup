@@ -119,11 +119,20 @@ export default function Home() {
     }
   };
 
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+    } else {
+      // 히스토리가 없는 경우 메인 페이지나 다른 경로로 이동
+      router.push("/");
+    }
+  };
+
   return (
     <main className="max-w-7xl mx-auto p-6">
       {/* 인포커스 로고와 뒤로가기 버튼 섹션 */}
       <div className="flex items-center justify-between mb-8">
-        {/* 인포커스 로고 표시 (경로와 크기는 프로젝트 상황에 맞게 조정) */}
+        {/* 인포커스 로고 표시 */}
         <Image
           src="/images/infocus-logo.png"
           alt="Infocus Logo"
@@ -133,7 +142,7 @@ export default function Home() {
         />
         {/* 뒤로가기 버튼 */}
         <button
-          onClick={() => router.back()}
+          onClick={handleBack}
           className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
         >
           뒤로가기
@@ -175,7 +184,6 @@ export default function Home() {
             <PostList
               posts={posts}
               onPostClick={(postId) => {
-                // 게시글 상세 페이지로 이동 시 useRouter 사용
                 router.push(`/posts/${postId}`);
               }}
             />
