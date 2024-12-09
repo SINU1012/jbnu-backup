@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import DepartmentSelector from "@/components/DepartmentSelector";
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList";
@@ -21,7 +22,7 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter(); // router 훅 사용
+  const router = useRouter();
 
   // 서버 응답 처리용 헬퍼 함수
   const handleResponse = async (res: Response) => {
@@ -120,6 +121,25 @@ export default function Home() {
 
   return (
     <main className="max-w-7xl mx-auto p-6">
+      {/* 인포커스 로고와 뒤로가기 버튼 섹션 */}
+      <div className="flex items-center justify-between mb-8">
+        {/* 인포커스 로고 표시 (경로와 크기는 프로젝트 상황에 맞게 조정) */}
+        <Image
+          src="/images/infocus-logo.png"
+          alt="Infocus Logo"
+          width={150}
+          height={50}
+          priority
+        />
+        {/* 뒤로가기 버튼 */}
+        <button
+          onClick={() => router.back()}
+          className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+        >
+          뒤로가기
+        </button>
+      </div>
+
       <h1 className="text-3xl font-bold mb-8">인문대학 자료실</h1>
 
       {!selectedDept ? (
