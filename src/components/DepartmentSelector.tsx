@@ -12,7 +12,7 @@ const departments = [
   "중어중문학과",
   "고고문화인류학과",
   "문헌정보학과",
-  "기록관리학과",
+  "국제학부",
 ];
 
 export default function DepartmentSelector({
