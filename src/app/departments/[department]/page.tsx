@@ -8,12 +8,8 @@ const deptNameMap: Record<string, string> = {
   agriculture: "농생명대학",
 };
 
-export default function DepartmentPage({
-  params,
-}: {
-  params: { department: string };
-}) {
-  const { department } = params;
+export default function DepartmentPage(props: any) {
+  const { department } = props.params as { department: string };
 
   const deptMajors = departments[department as keyof typeof departments];
   if (!deptMajors) {
