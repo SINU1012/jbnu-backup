@@ -14,19 +14,15 @@ interface Post {
   createdAt?: string;
 }
 
-interface Params {
-  params: { department: string; major: string };
-}
-
 function validateDeptAndMajor(department: string, major: string) {
   const deptMajors = departments[department as keyof typeof departments];
-  if (!deptMajors || !deptMajors.some((m) => m.slug === major)) {
-    return false;
-  }
-  return true;
+  return !!(deptMajors && deptMajors.some((m) => m.slug === major));
 }
 
-export async function GET(request: Request, { params }: Params) {
+export async function GET(
+  request: Request,
+  { params }: { params: { department: string; major: string } }
+) {
   const { department, major } = params;
 
   if (!validateDeptAndMajor(department, major)) {
@@ -66,7 +62,10 @@ export async function GET(request: Request, { params }: Params) {
   }
 }
 
-export async function POST(request: Request, { params }: Params) {
+export async function POST(
+  request: Request,
+  { params }: { params: { department: string; major: string } }
+) {
   const { department, major } = params;
 
   if (!validateDeptAndMajor(department, major)) {
@@ -117,7 +116,10 @@ export async function POST(request: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(request: Request, { params }: Params) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { department: string; major: string } }
+) {
   const { department, major } = params;
 
   if (!validateDeptAndMajor(department, major)) {
