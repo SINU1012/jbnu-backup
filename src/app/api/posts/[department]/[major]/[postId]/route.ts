@@ -1,19 +1,16 @@
 // app/api/posts/[department]/[major]/[postId]/route.ts
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { departments } from "@/data/departments";
 
 function validateDeptAndMajor(department: string, major: string) {
   const deptMajors = departments[department as keyof typeof departments];
-  if (!deptMajors || !deptMajors.some((m) => m.slug === major)) {
-    return false;
-  }
-  return true;
+  return deptMajors && deptMajors.some((m) => m.slug === major);
 }
 
-export function GET(
-  request: Request,
+export async function GET(
+  req: NextRequest,
   { params }: { params: { department: string; major: string; postId: string } }
 ) {
   const { department, major, postId } = params;
@@ -68,7 +65,7 @@ export function GET(
 }
 
 export async function DELETE(
-  request: Request,
+  req: NextRequest,
   { params }: { params: { department: string; major: string; postId: string } }
 ) {
   const { department, major, postId } = params;
