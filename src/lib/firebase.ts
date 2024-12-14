@@ -3,8 +3,10 @@ import { getStorage } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBzwFUCej...",
+  apiKey: "AIzaSyBzwFUCejELEbp6viu0atfSiwdlJ9MU-Rg",
   authDomain: "jbnu-humanities.firebaseapp.com",
+  databaseURL:
+    "https://jbnu-humanities-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "jbnu-humanities",
   storageBucket: "jbnu-humanities.firebasestorage.app",
   messagingSenderId: "745516028752",

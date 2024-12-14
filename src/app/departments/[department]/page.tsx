@@ -1,66 +1,44 @@
-// app/departments/[department]/page.tsx
 import { notFound } from "next/navigation";
-import ClientWrapper from "./ClientWrapper";
+import Link from "next/link";
+import { departments } from "@/data/departments";
 
-export default async function DepartmentPage({ params }: any) {
-  // 여기서 params를 any로 받고, 내부에서 필요한 부분만 캐스팅한다.
-  const { department } = params as { department: string };
+interface Params {
+  department: string;
+}
 
-  const res = await fetch(`http://localhost:3000/api/posts/${department}`, {
-    cache: "no-store",
-  });
+const deptNameMap: Record<string, string> = {
+  humanities: "인문대학",
+  science: "자연과학대학",
+  agriculture: "농생명대학",
+};
 
-  if (!res.ok) {
+// 여기서는 async가 필요하지 않습니다. 비동기 작업이 없다면 제거하세요.
+export default function DepartmentPage({ params }: { params: Params }) {
+  const { department } = params;
+
+  const deptMajors = departments[department as keyof typeof departments];
+  if (!deptMajors) {
     notFound();
   }
 
-  const posts = (await res.json()) as any[]; // posts를 any[]로 받거나 별도 타입 정의
-  // 혹은 실제 Post 타입을 정의한 뒤 캐스팅 가능
-
-  const deptNameMap: Record<string, string> = {
-    humanities: "인문대학",
-    science: "자연과학대학",
-    agriculture: "농생명대학",
-  };
   const deptDisplayName = deptNameMap[department] || department;
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">
-        {deptDisplayName} 자료보관소
-      </h2>
-      {posts.length > 0 ? (
-        <ul className="mb-8 space-y-2">
-          {posts.map((post: any) => (
-            <li
-              key={post._id}
-              className="p-2 border border-gray-300 rounded bg-white text-gray-800"
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">{deptDisplayName} 자료보관소</h1>
+      <p className="mb-4">아래 전공을 선택하세요:</p>
+      <ul className="space-y-2">
+        {deptMajors.map((major) => (
+          <li key={major.slug}>
+            <Link
+              href={`/departments/${department}/${major.slug}`}
+              className="text-blue-600 hover:underline"
             >
-              <h3 className="font-bold">{post.title}</h3>
-              <p>{post.content}</p>
-              {post.fileUrls?.length > 0 && (
-                <ul className="mt-2 list-disc list-inside space-y-1">
-                  {post.fileUrls.map((url: string, idx: number) => (
-                    <li key={idx}>
-                      <a
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
-                      >
-                        첨부파일 {idx + 1}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-sm text-gray-500 mb-8">등록된 게시글이 없습니다.</p>
-      )}
-      <ClientWrapper department={department} />
+              {major.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 // src/lib/firebase.js
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,14 +16,18 @@ const firebaseConfig = {
 
 let app;
 let analytics;
+let storage;
 
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
+  storage = getStorage(app);
+
   if (typeof window !== "undefined") {
     analytics = getAnalytics(app);
   }
 } else {
   app = getApp();
+  storage = getStorage(app);
 }
 
-export { app, analytics };
+export { app, storage, analytics };

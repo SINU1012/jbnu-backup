@@ -1,10 +1,8 @@
-// app/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-// 데모용 비밀번호 (실제로는 환경변수나 보안처리 필요)
 const PASSWORDS: Record<string, string> = {
   humanities: "humanities123",
   science: "science123",

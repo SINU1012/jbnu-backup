@@ -1,5 +1,4 @@
-// PostList.tsx (개선 후)
-// 수정 사항 없음. 필요 시 부서별 페이지에서 import해서 사용 가능.
+// src/components/PostList.tsx
 import React from "react";
 
 interface Post {
@@ -23,20 +22,29 @@ export default function PostList({ posts, onPostClick }: PostListProps) {
         <div
           key={post._id}
           onClick={() => onPostClick(post._id)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") onPostClick(post._id);
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label={`게시글 상세보기: ${post.title}`}
           className="p-4 bg-white rounded-lg border border-gray-200 
-                   hover:shadow-md transition-shadow cursor-pointer"
+                     hover:shadow-md transition-shadow cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-500"
         >
-          <h3 className="text-lg font-medium mb-2">{post.title}</h3>
+          <h3 className="text-lg font-medium mb-2 line-clamp-1">
+            {post.title}
+          </h3>
           <p className="text-gray-600 text-sm mb-2 line-clamp-2">
             {post.content}
           </p>
           {post.fileUrls.length > 0 && (
-            <div className="flex gap-2 mb-2">
+            <div className="flex gap-2 mb-2 items-center">
               <svg
                 className="w-4 h-4 text-gray-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"

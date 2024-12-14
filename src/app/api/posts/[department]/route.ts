@@ -1,11 +1,15 @@
+// app/api/posts/[postId]/route.ts
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export async function GET(request: Request, context: any) {
-  const { postId } = context.params as { postId: string };
+interface Params {
+  params: { postId: string };
+}
 
-  // postId가 ObjectId로 변환 불가능한 경우 바로 에러 반환
+export async function GET(request: Request, { params }: Params) {
+  const { postId } = params;
+
   if (!ObjectId.isValid(postId)) {
     return NextResponse.json(
       { error: "잘못된 게시글 ID입니다." },
@@ -18,7 +22,6 @@ export async function GET(request: Request, context: any) {
     const db = client.db("tlsdn1012");
     const collection = db.collection("tlsdn1012");
 
-    // query를 ObjectId 타입으로 확실히 지정
     const query = { _id: new ObjectId(postId) };
     const post = await collection.findOne(query);
 
@@ -40,14 +43,18 @@ export async function GET(request: Request, context: any) {
         department: post.department,
       },
     });
-  } catch (error: any) {
-    console.error("Error fetching post:", error);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "알 수 없는 오류가 발생했습니다.";
+    console.error("Error fetching post:", errorMessage);
     return NextResponse.json({ error: "서버 에러 발생" }, { status: 500 });
   }
 }
 
-export async function DELETE(request: Request, context: any) {
-  const { postId } = context.params as { postId: string };
+export async function DELETE(request: Request, { params }: Params) {
+  const { postId } = params;
 
   if (!ObjectId.isValid(postId)) {
     return NextResponse.json(
@@ -72,8 +79,12 @@ export async function DELETE(request: Request, context: any) {
     }
 
     return NextResponse.json({ message: "게시글 삭제 성공" });
-  } catch (error: any) {
-    console.error("Error deleting post:", error);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "알 수 없는 오류가 발생했습니다.";
+    console.error("Error deleting post:", errorMessage);
     return NextResponse.json({ error: "서버 에러 발생" }, { status: 500 });
   }
 }

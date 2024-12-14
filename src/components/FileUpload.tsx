@@ -1,8 +1,6 @@
-// components/FileUpload.tsx
+"use client";
+
 import { useState } from "react";
-// 아래 경로는 실제 firebase.ts 파일 위치에 따라 조정
-// firebase.ts가 src 폴더 바로 아래 있다면 "../firebase"가 맞음
-// firebase.ts가 src/lib 폴더 아래라면 "../lib/firebase"로 수정
 import { storage } from "../lib/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -12,11 +10,14 @@ interface FileUploadProps {
 
 export default function FileUpload({ onUploadComplete }: FileUploadProps) {
   const [uploading, setUploading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
 
     setUploading(true);
+    setErrorMessage("");
+
     const files = Array.from(e.target.files);
     const uploadPromises = files.map(async (file) => {
       const fileRef = ref(storage, `uploads/${Date.now()}-${file.name}`);
@@ -29,6 +30,7 @@ export default function FileUpload({ onUploadComplete }: FileUploadProps) {
       onUploadComplete(urls);
     } catch (error) {
       console.error("Upload failed:", error);
+      setErrorMessage("파일 업로드 중 오류가 발생했습니다.");
     } finally {
       setUploading(false);
     }
@@ -49,9 +51,12 @@ export default function FileUpload({ onUploadComplete }: FileUploadProps) {
           file:rounded-full file:border-0
           file:text-sm file:font-semibold
           file:bg-violet-50 file:text-violet-700
-          hover:file:bg-violet-100"
+          hover:file:bg-violet-100 disabled:opacity-50"
       />
-      {uploading && <p className="mt-2 text-sm text-gray-500">업로드중...</p>}
+      {uploading && <p className="mt-2 text-sm text-gray-500">업로드 중...</p>}
+      {errorMessage && (
+        <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
+      )}
     </div>
   );
 }

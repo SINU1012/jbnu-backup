@@ -1,17 +1,23 @@
-// src/components/PostForm.tsx
+"use client";
+
 import React, { useState } from "react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
-import { Post } from "@/types/post";
 
 interface PostFormProps {
   department: string;
-  onSubmit: (post: Omit<Post, "id" | "createdAt">) => Promise<void>;
+  major: string;
+  onSubmit: (postData: {
+    title: string;
+    content: string;
+    fileUrls: string[];
+  }) => Promise<void>;
   onCancel: () => void;
 }
 
 export default function PostForm({
   department,
+  major,
   onSubmit,
   onCancel,
 }: PostFormProps) {
@@ -31,7 +37,7 @@ export default function PostForm({
           const file = files[i];
           const fileRef = ref(
             storage,
-            `uploads/${department}/${Date.now()}-${file.name}`
+            `uploads/${department}/${major}/${Date.now()}-${file.name}`
           );
           await uploadBytes(fileRef, file);
           const url = await getDownloadURL(fileRef);
@@ -39,15 +45,7 @@ export default function PostForm({
         }
       }
 
-      // 생성 시 id, createdAt은 서버에서 생성한다고 가정
-      const postData: Omit<Post, "id" | "createdAt"> = {
-        department,
-        title,
-        content,
-        fileUrls,
-      };
-
-      await onSubmit(postData);
+      await onSubmit({ title, content, fileUrls });
       setTitle("");
       setContent("");
       setFiles(null);
@@ -71,7 +69,6 @@ export default function PostForm({
           required
         />
       </div>
-
       <div>
         <label className="block text-sm font-medium mb-2">내용</label>
         <textarea
@@ -81,19 +78,17 @@ export default function PostForm({
           required
         />
       </div>
-
       <div>
         <label className="block text-sm font-medium mb-2">파일 첨부</label>
         <input
           type="file"
           multiple
           onChange={(e) => setFiles(e.target.files)}
-          className="w-full text-sm file:mr-4 file:py-2 file:px-4 
-                     file:rounded-full file:border-0 file:bg-violet-50 
+          className="w-full text-sm file:mr-4 file:py-2 file:px-4
+                     file:rounded-full file:border-0 file:bg-violet-50
                      file:text-violet-700"
         />
       </div>
-
       <div className="flex justify-end space-x-4 pt-4">
         <button
           type="button"
@@ -106,7 +101,7 @@ export default function PostForm({
         <button
           type="submit"
           disabled={uploading}
-          className="px-4 py-2 bg-violet-600 text-white rounded-md 
+          className="px-4 py-2 bg-violet-600 text-white rounded-md
                    hover:bg-violet-700 disabled:opacity-50"
         >
           {uploading ? "업로드 중..." : "저장"}
