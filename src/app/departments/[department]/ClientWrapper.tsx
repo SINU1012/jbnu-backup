@@ -1,7 +1,7 @@
 // app/departments/[department]/ClientWrapper.tsx
 "use client";
 
-import PostForm from "../../PostForm";
+import PostForm from "../../posts/PostForm"; // 수정된 경로
 import { Post } from "@/types/post";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -28,7 +28,6 @@ export default function ClientWrapper({ department }: ClientWrapperProps) {
       return;
     }
     setMessage("게시글이 성공적으로 작성되었습니다.");
-    // 게시글 생성 후 데이터 갱신
     router.refresh();
   };
 
