@@ -11,9 +11,9 @@ function validateDeptAndMajor(department: string, major: string) {
 
 export async function GET(
   request: Request,
-  context: { params: { department: string; major: string; postId: string } }
+  { params }: { params: Record<string, string> }
 ) {
-  const { department, major, postId } = context.params;
+  const { department, major, postId } = params;
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
