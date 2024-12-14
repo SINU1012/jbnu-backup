@@ -8,14 +8,15 @@ function validateDeptAndMajor(department: string, major: string): boolean {
   return !!(deptMajors && deptMajors.some((m) => m.slug === major));
 }
 
+// 타입 정의를 제거하고, 내부에서 as를 통해 캐스팅
 export async function GET(request: Request, context: any) {
-  const { department, major, postId } = context.params as {
+  const { params } = context;
+  const { department, major, postId } = params as {
     department: string;
     major: string;
     postId: string;
   };
 
-  // 유효성 검사
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
       { error: "존재하지 않는 대학 또는 전공입니다." },
@@ -35,8 +36,8 @@ export async function GET(request: Request, context: any) {
     const db = client.db("tlsdn1012");
     const collection = db.collection("posts");
     const query = { _id: new ObjectId(postId), department, major };
-
     const post = await collection.findOne(query);
+
     if (!post) {
       return NextResponse.json(
         { error: "게시글을 찾을 수 없습니다." },
@@ -65,7 +66,8 @@ export async function GET(request: Request, context: any) {
 }
 
 export async function DELETE(request: Request, context: any) {
-  const { department, major, postId } = context.params as {
+  const { params } = context;
+  const { department, major, postId } = params as {
     department: string;
     major: string;
     postId: string;
