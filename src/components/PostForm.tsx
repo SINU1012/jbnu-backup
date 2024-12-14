@@ -13,6 +13,7 @@ interface PostFormProps {
     fileUrls: string[];
   }) => Promise<void>;
   onCancel: () => void;
+  onPostCreated?: () => Promise<void>; // 필요하다면 추가
 }
 
 export default function PostForm({
@@ -20,6 +21,7 @@ export default function PostForm({
   major,
   onSubmit,
   onCancel,
+  onPostCreated,
 }: PostFormProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -49,6 +51,11 @@ export default function PostForm({
       setTitle("");
       setContent("");
       setFiles(null);
+
+      // 게시글 작성 완료 후 onPostCreated가 있다면 호출
+      if (onPostCreated) {
+        await onPostCreated();
+      }
     } catch (error) {
       console.error("Error submitting post:", error);
       alert("게시글 작성 중 오류가 발생했습니다.");

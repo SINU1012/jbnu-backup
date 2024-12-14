@@ -5,7 +5,6 @@ import clientPromise from "@/lib/mongodb";
 import { departments } from "@/data/departments";
 
 interface Post {
-  _id?: string;
   department: string;
   major: string;
   title: string;
