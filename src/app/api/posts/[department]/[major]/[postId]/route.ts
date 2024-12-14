@@ -2,27 +2,17 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { departments } from "@/data/departments";
-import type { NextRequest } from "next/server";
-
-interface RouteParams {
-  department: string;
-  major: string;
-  postId: string;
-}
-
 function validateDeptAndMajor(department: string, major: string) {
   const deptMajors = departments[department as keyof typeof departments];
-  if (!deptMajors || !deptMajors.some((m) => m.slug === major)) {
-    return false;
-  }
-  return true;
+  return !!(deptMajors && deptMajors.some((m) => m.slug === major));
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: RouteParams }
-) {
-  const { department, major, postId } = params;
+export async function GET(request: Request, context: any) {
+  const { department, major, postId } = context.params as {
+    department: string;
+    major: string;
+    postId: string;
+  };
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
@@ -42,10 +32,9 @@ export async function GET(
     const client = await clientPromise;
     const db = client.db("tlsdn1012");
     const collection = db.collection("posts");
-
     const query = { _id: new ObjectId(postId), department, major };
-    const post = await collection.findOne(query);
 
+    const post = await collection.findOne(query);
     if (!post) {
       return NextResponse.json(
         { error: "게시글을 찾을 수 없습니다." },
@@ -74,8 +63,8 @@ export async function GET(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: RouteParams }
+  request: Request,
+  { params }: { params: { department: string; major: string; postId: string } }
 ) {
   const { department, major, postId } = params;
 
