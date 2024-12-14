@@ -8,16 +8,16 @@ interface PageProps {
   };
 }
 
-export default async function DepartmentPage({ params }: PageProps) {
-  const { department } = params;
-  // 부서별 게시글 불러오기
-  const res = await fetch(`http://localhost:3000/api/posts/${department}`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    notFound();
+// app/departments/[department]/page.tsx
+export default async function DepartmentPage({
+    params,
+  }: {
+    params: { department: string };
+  }) {
+    const { department } = params;
+    // department를 사용한 로직...
   }
+  
 
   const posts = await res.json();
 
