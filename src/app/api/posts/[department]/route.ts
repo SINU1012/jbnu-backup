@@ -3,12 +3,9 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-interface Params {
-  params: { postId: string };
-}
-
-export async function GET(request: Request, { params }: Params) {
-  const { postId } = params;
+export async function GET(request: Request, context: any) {
+  const { params } = context;
+  const { postId } = params as { postId: string };
 
   if (!ObjectId.isValid(postId)) {
     return NextResponse.json(
@@ -53,8 +50,9 @@ export async function GET(request: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(request: Request, { params }: Params) {
-  const { postId } = params;
+export async function DELETE(request: Request, context: any) {
+  const { params } = context;
+  const { postId } = params as { postId: string };
 
   if (!ObjectId.isValid(postId)) {
     return NextResponse.json(
