@@ -1,17 +1,26 @@
-// app/api/posts/[department]/[major]/[postId]/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { departments } from "@/data/departments";
+import type { NextRequest } from "next/server";
+
+interface RouteParams {
+  department: string;
+  major: string;
+  postId: string;
+}
 
 function validateDeptAndMajor(department: string, major: string) {
   const deptMajors = departments[department as keyof typeof departments];
-  return deptMajors && deptMajors.some((m) => m.slug === major);
+  if (!deptMajors || !deptMajors.some((m) => m.slug === major)) {
+    return false;
+  }
+  return true;
 }
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { department: string; major: string; postId: string } }
+  { params }: { params: RouteParams }
 ) {
   const { department, major, postId } = params;
 
@@ -56,7 +65,7 @@ export async function GET(
         createdAt: post.createdAt,
       },
     });
-  } catch (error: unknown) {
+  } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "알 수 없는 오류";
     console.error("Error fetching post:", errorMessage);
@@ -65,10 +74,10 @@ export async function GET(
 }
 
 export async function DELETE(
-  request: Request,
-  context: { params: { department: string; major: string; postId: string } }
+  request: NextRequest,
+  { params }: { params: RouteParams }
 ) {
-  const { department, major, postId } = context.params;
+  const { department, major, postId } = params;
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
@@ -100,7 +109,7 @@ export async function DELETE(
     }
 
     return NextResponse.json({ message: "게시글 삭제 성공" });
-  } catch (error: unknown) {
+  } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "알 수 없는 오류";
     console.error("Error deleting post:", errorMessage);
