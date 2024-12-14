@@ -2,11 +2,14 @@ import { notFound } from "next/navigation";
 import { departments } from "@/data/departments";
 import MajorClientPage from "./MajorClientPage";
 
-export default function MajorPage({
-  params,
-}: {
-  params: { department: string; major: string };
-}) {
+interface PageProps {
+  params: {
+    department: string;
+    major: string;
+  };
+}
+
+export default function MajorPage({ params }: PageProps) {
   const { department, major } = params;
 
   const deptData = departments[department as keyof typeof departments];
