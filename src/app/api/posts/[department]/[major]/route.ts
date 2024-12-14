@@ -14,16 +14,16 @@ interface Post {
   createdAt?: string;
 }
 
-function validateDeptAndMajor(department: string, major: string) {
+function validateDeptAndMajor(department: string, major: string): boolean {
   const deptMajors = departments[department as keyof typeof departments];
   return !!(deptMajors && deptMajors.some((m) => m.slug === major));
 }
 
-export async function GET(
-  request: Request,
-  { params }: { params: { department: string; major: string } }
-) {
-  const { department, major } = params;
+export async function GET(request: Request, context: any) {
+  const { department, major } = context.params as {
+    department: string;
+    major: string;
+  };
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
@@ -62,11 +62,11 @@ export async function GET(
   }
 }
 
-export async function POST(
-  request: Request,
-  { params }: { params: { department: string; major: string } }
-) {
-  const { department, major } = params;
+export async function POST(request: Request, context: any) {
+  const { department, major } = context.params as {
+    department: string;
+    major: string;
+  };
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
@@ -116,11 +116,11 @@ export async function POST(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { department: string; major: string } }
-) {
-  const { department, major } = params;
+export async function DELETE(request: Request, context: any) {
+  const { department, major } = context.params as {
+    department: string;
+    major: string;
+  };
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
