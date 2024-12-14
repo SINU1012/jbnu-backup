@@ -8,7 +8,7 @@ function validateDeptAndMajor(department: string, major: string): boolean {
   return !!(deptMajors && deptMajors.some((m) => m.slug === major));
 }
 
-// 타입 정의를 제거하고, 내부에서 as를 통해 캐스팅
+// params 타입 정의 제거, 런타임에 as로 단언
 export async function GET(request: Request, context: any) {
   const { params } = context;
   const { department, major, postId } = params as {
