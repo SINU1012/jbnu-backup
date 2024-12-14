@@ -12,7 +12,7 @@ function validateDeptAndMajor(department: string, major: string) {
   return true;
 }
 
-export async function GET(
+export function GET(
   request: Request,
   { params }: { params: { department: string; major: string; postId: string } }
 ) {
