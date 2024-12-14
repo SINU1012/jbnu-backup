@@ -1,17 +1,15 @@
 // app/departments/[department]/page.tsx
+
 import { notFound } from "next/navigation";
 import ClientWrapper from "./ClientWrapper";
 
-interface PageProps {
-  params: {
-    department: string;
-  };
-}
-
-export default async function DepartmentPage({ params }: PageProps) {
+export default async function DepartmentPage({
+  params,
+}: {
+  params: { department: string };
+}) {
   const { department } = params;
 
-  // API를 통해 해당 department의 게시글 목록을 가져옵니다.
   const res = await fetch(`http://localhost:3000/api/posts/${department}`, {
     cache: "no-store",
   });
@@ -22,7 +20,6 @@ export default async function DepartmentPage({ params }: PageProps) {
 
   const posts = await res.json();
 
-  // 부서 이름 매핑 (옵션)
   const deptNameMap: Record<string, string> = {
     humanities: "인문대학",
     science: "자연과학대학",
