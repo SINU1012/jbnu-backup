@@ -1,21 +1,13 @@
+// src/components/PostForm.tsx
 import React, { useState } from "react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
+import { Post } from "@/types/post";
 
 interface PostFormProps {
   department: string;
-  onSubmit: (post: Omit<Post, "_id" | "createdAt" | "updatedAt">) => void;
+  onSubmit: (post: Omit<Post, "id" | "createdAt">) => Promise<void>;
   onCancel: () => void;
-}
-
-interface Post {
-  _id?: string;
-  title: string;
-  content: string;
-  fileUrls: string[];
-  department: string;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export default function PostForm({
@@ -33,7 +25,6 @@ export default function PostForm({
     setUploading(true);
 
     try {
-      // 파일 업로드 처리
       const fileUrls: string[] = [];
       if (files) {
         for (let i = 0; i < files.length; i++) {
@@ -48,8 +39,8 @@ export default function PostForm({
         }
       }
 
-      // 게시글 데이터 생성
-      const postData: Omit<Post, "_id" | "createdAt" | "updatedAt"> = {
+      // 생성 시 id, createdAt은 서버에서 생성한다고 가정
+      const postData: Omit<Post, "id" | "createdAt"> = {
         department,
         title,
         content,

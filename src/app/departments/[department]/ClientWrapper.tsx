@@ -1,8 +1,7 @@
-// app/departments/[department]/ClientWrapper.tsx
+// src/app/departments/[department]/ClientWrapper.tsx
 "use client";
 
 import PostForm from "../../../components/PostForm";
-// 수정된 경로
 import { Post } from "@/types/post";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,9 +14,7 @@ export default function ClientWrapper({ department }: ClientWrapperProps) {
   const router = useRouter();
   const [message, setMessage] = useState("");
 
-  const onSubmit = async (
-    postData: Omit<Post, "_id" | "createdAt" | "updatedAt">
-  ) => {
+  const onSubmit = async (postData: Omit<Post, "id" | "createdAt">) => {
     const res = await fetch(`/api/posts/${department}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
