@@ -1,5 +1,5 @@
 // app/api/posts/[department]/[major]/[postId]/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { departments } from "@/data/departments";
@@ -10,8 +10,8 @@ function validateDeptAndMajor(department: string, major: string) {
 }
 
 export async function GET(
-  request: Request,
-  { params }: { params: Record<string, string> }
+  request: NextRequest,
+  { params }: { params: { department: string; major: string; postId: string } }
 ) {
   const { department, major, postId } = params;
 
