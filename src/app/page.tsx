@@ -1,167 +1,96 @@
+// app/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import DepartmentSelector from "@/components/DepartmentSelector";
-import PostForm from "@/components/PostForm";
-import PostList from "@/components/PostList";
 
-interface Post {
-  _id: string;
-  title: string;
-  content: string;
-  fileUrls: string[];
-  createdAt: string;
-  department: string;
-}
+// 데모용 비밀번호 (실제로는 환경변수나 보안처리 필요)
+const PASSWORDS: Record<string, string> = {
+  humanities: "humanities123",
+  science: "science123",
+  agriculture: "agri123",
+};
 
-export default function Home() {
-  const [selectedDept, setSelectedDept] = useState("");
-  const [showPostForm, setShowPostForm] = useState(false);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter(); // router 훅 사용
+export default function HomePage() {
+  const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDept, setSelectedDept] = useState<string | null>(null);
+  const [inputPassword, setInputPassword] = useState("");
+  const [error, setError] = useState("");
 
-  // 서버 응답 처리용 헬퍼 함수
-  const handleResponse = async (res: Response) => {
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Server Error Response:", errorText);
-      return { error: "서버 요청에 실패했습니다." };
-    }
-
-    const jsonData = await res.json();
-    return jsonData;
+  const handleDeptClick = (department: string) => {
+    setSelectedDept(department);
+    setInputPassword("");
+    setError("");
+    setShowModal(true);
   };
 
-  // 게시글 목록 가져오기
-  useEffect(() => {
-    const fetchPosts = async () => {
-      if (!selectedDept) {
-        setPosts([]);
-        setError(null);
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `/api/posts?department=${encodeURIComponent(selectedDept)}`
-        );
-        const jsonData = await handleResponse(res);
-
-        if (jsonData.error) {
-          setError(jsonData.error);
-          setPosts([]);
-        } else if (Array.isArray(jsonData.data)) {
-          setPosts(jsonData.data);
-          setError(null);
-        } else {
-          console.error("Unknown response format:", jsonData);
-          setError("알 수 없는 응답 형식입니다.");
-          setPosts([]);
-        }
-      } catch (err) {
-        console.error("Fetch Error:", err);
-        setError("게시글을 불러오는 중 오류가 발생했습니다.");
-        setPosts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, [selectedDept]);
-
-  // 게시글 작성 처리
-  const handlePostSubmit = async (
-    postData: Omit<Post, "_id" | "createdAt">
-  ) => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postData),
-      });
-
-      const jsonData = await handleResponse(res);
-
-      if (jsonData.error) {
-        setError(jsonData.error);
-      } else {
-        // 게시글 작성 성공 시 폼 닫고 목록 갱신
-        setShowPostForm(false);
-        const newPostsRes = await fetch(
-          `/api/posts?department=${encodeURIComponent(selectedDept)}`
-        );
-        const newPostsData = await handleResponse(newPostsRes);
-
-        if (newPostsData.error) {
-          setError(newPostsData.error);
-          setPosts([]);
-        } else if (Array.isArray(newPostsData.data)) {
-          setPosts(newPostsData.data);
-          setError(null);
-        } else {
-          console.error("Unknown response format after POST:", newPostsData);
-          setError("알 수 없는 응답 형식입니다.");
-          setPosts([]);
-        }
-      }
-    } catch (error) {
-      console.error("Post Submit Error:", error);
-      setError("게시글 작성 중 오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
+  const handleSubmit = () => {
+    if (selectedDept && PASSWORDS[selectedDept] === inputPassword) {
+      router.push(`/departments/${selectedDept}`);
+    } else {
+      setError("비밀번호가 올바르지 않습니다.");
     }
   };
 
   return (
-    <main className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8">인문대학 자료실</h1>
+    <div>
+      <h2 className="text-xl font-semibold mb-4">메인 페이지</h2>
+      <p className="mb-4">접근할 자료보관소를 선택하세요:</p>
+      <div className="flex gap-4">
+        <button
+          onClick={() => handleDeptClick("humanities")}
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          인문대학 자료보관소
+        </button>
+        <button
+          onClick={() => handleDeptClick("science")}
+          className="px-4 py-2 bg-green-600 text-white rounded"
+        >
+          자연과학대학 자료보관소
+        </button>
+        <button
+          onClick={() => handleDeptClick("agriculture")}
+          className="px-4 py-2 bg-yellow-600 text-white rounded"
+        >
+          농생명대학 자료보관소
+        </button>
+      </div>
 
-      {!selectedDept ? (
-        <DepartmentSelector
-          selectedDept={selectedDept}
-          onSelect={setSelectedDept}
-        />
-      ) : (
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">{selectedDept}</h2>
-            <button
-              onClick={() => setShowPostForm(true)}
-              className="px-4 py-2 bg-violet-600 text-white rounded-md"
-            >
-              새 글 작성
-            </button>
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded shadow-md">
+            <h3 className="text-lg font-semibold mb-2">
+              {selectedDept === "humanities" && "인문대학"}
+              {selectedDept === "science" && "자연과학대학"}
+              {selectedDept === "agriculture" && "농생명대학"} 자료보관소
+            </h3>
+            <p className="mb-2">비밀번호를 입력해주세요.</p>
+            <input
+              type="password"
+              value={inputPassword}
+              onChange={(e) => setInputPassword(e.target.value)}
+              className="border p-2 rounded w-full mb-2"
+            />
+            {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 text-gray-700"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleSubmit}
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+              >
+                확인
+              </button>
+            </div>
           </div>
-
-          {showPostForm && (
-            <PostForm
-              department={selectedDept}
-              onSubmit={handlePostSubmit}
-              onCancel={() => setShowPostForm(false)}
-            />
-          )}
-
-          {loading ? (
-            <div>로딩 중...</div>
-          ) : error ? (
-            <div className="text-red-500">오류: {error}</div>
-          ) : (
-            <PostList
-              posts={posts}
-              onPostClick={(postId) => {
-                // 게시글 상세 페이지로 이동 시 useRouter 사용
-                router.push(`/posts/${postId}`);
-              }}
-            />
-          )}
         </div>
       )}
-    </main>
+    </div>
   );
 }
