@@ -1,8 +1,9 @@
 // app/departments/[department]/page.tsx
-
 import { notFound } from "next/navigation";
 import ClientWrapper from "./ClientWrapper";
 
+// 페이지 컴포넌트에서 별도의 PageProps 인터페이스를 정의하지 않고,
+// params 타입을 함수 파라미터에서 인라인으로 지정합니다.
 export default async function DepartmentPage({
   params,
 }: {
