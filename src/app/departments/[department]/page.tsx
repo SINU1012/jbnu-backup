@@ -2,14 +2,9 @@
 import { notFound } from "next/navigation";
 import ClientWrapper from "./ClientWrapper";
 
-// 페이지 컴포넌트에서 별도의 PageProps 인터페이스를 정의하지 않고,
-// params 타입을 함수 파라미터에서 인라인으로 지정합니다.
-export default async function DepartmentPage({
-  params,
-}: {
-  params: { department: string };
-}) {
-  const { department } = params;
+export default async function DepartmentPage({ params }: any) {
+  // 여기서 params를 any로 받고, 내부에서 필요한 부분만 캐스팅한다.
+  const { department } = params as { department: string };
 
   const res = await fetch(`http://localhost:3000/api/posts/${department}`, {
     cache: "no-store",
@@ -19,7 +14,8 @@ export default async function DepartmentPage({
     notFound();
   }
 
-  const posts = await res.json();
+  const posts = (await res.json()) as any[]; // posts를 any[]로 받거나 별도 타입 정의
+  // 혹은 실제 Post 타입을 정의한 뒤 캐스팅 가능
 
   const deptNameMap: Record<string, string> = {
     humanities: "인문대학",
@@ -64,7 +60,6 @@ export default async function DepartmentPage({
       ) : (
         <p className="text-sm text-gray-500 mb-8">등록된 게시글이 없습니다.</p>
       )}
-
       <ClientWrapper department={department} />
     </div>
   );
