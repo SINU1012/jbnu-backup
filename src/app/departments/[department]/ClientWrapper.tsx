@@ -1,7 +1,8 @@
 // app/departments/[department]/ClientWrapper.tsx
 "use client";
 
-import PostForm from "../../posts/PostForm"; // 수정된 경로
+import PostForm from "../../../components/PostForm";
+// 수정된 경로
 import { Post } from "@/types/post";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
