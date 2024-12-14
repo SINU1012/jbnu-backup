@@ -20,10 +20,8 @@ function validateDeptAndMajor(department: string, major: string): boolean {
 }
 
 export async function GET(request: Request, context: any) {
-  const { department, major } = context.params as {
-    department: string;
-    major: string;
-  };
+  const department = context.params.department as string;
+  const major = context.params.major as string;
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
@@ -43,7 +41,7 @@ export async function GET(request: Request, context: any) {
       .sort({ createdAt: -1 })
       .toArray();
 
-    const posts = postDocs.map((doc) => ({
+    const posts = postDocs.map((doc: any) => ({
       _id: doc._id.toString(),
       department: doc.department,
       major: doc.major,
@@ -54,19 +52,15 @@ export async function GET(request: Request, context: any) {
     }));
 
     return NextResponse.json({ message: "게시글 목록 조회 성공", data: posts });
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "알 수 없는 오류";
-    console.error("Error fetching posts:", errorMessage);
+  } catch (error: any) {
+    console.error("Error fetching posts:", error);
     return NextResponse.json({ error: "서버 에러 발생" }, { status: 500 });
   }
 }
 
 export async function POST(request: Request, context: any) {
-  const { department, major } = context.params as {
-    department: string;
-    major: string;
-  };
+  const department = context.params.department as string;
+  const major = context.params.major as string;
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
@@ -108,19 +102,15 @@ export async function POST(request: Request, context: any) {
       message: "게시글 작성 성공",
       data: { ...newPost, _id: result.insertedId.toString() },
     });
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "알 수 없는 오류";
-    console.error("Error creating post:", errorMessage);
+  } catch (error: any) {
+    console.error("Error creating post:", error);
     return NextResponse.json({ error: "서버 에러 발생" }, { status: 500 });
   }
 }
 
 export async function DELETE(request: Request, context: any) {
-  const { department, major } = context.params as {
-    department: string;
-    major: string;
-  };
+  const department = context.params.department as string;
+  const major = context.params.major as string;
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
@@ -145,10 +135,8 @@ export async function DELETE(request: Request, context: any) {
     }
 
     return NextResponse.json({ message: "전공 관련 게시글 전체 삭제 성공" });
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "알 수 없는 오류";
-    console.error("Error deleting posts:", errorMessage);
+  } catch (error: any) {
+    console.error("Error deleting posts:", error);
     return NextResponse.json({ error: "서버 에러 발생" }, { status: 500 });
   }
 }
