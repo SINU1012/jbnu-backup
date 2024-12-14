@@ -1,10 +1,9 @@
-export const dynamic = "force-dynamic";
-
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { departments } from "@/data/departments";
-function validateDeptAndMajor(department: string, major: string) {
+
+function validateDeptAndMajor(department: string, major: string): boolean {
   const deptMajors = departments[department as keyof typeof departments];
   return !!(deptMajors && deptMajors.some((m) => m.slug === major));
 }
@@ -16,6 +15,7 @@ export async function GET(request: Request, context: any) {
     postId: string;
   };
 
+  // 유효성 검사
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
       { error: "존재하지 않는 대학 또는 전공입니다." },
@@ -56,7 +56,7 @@ export async function GET(request: Request, context: any) {
         createdAt: post.createdAt,
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     const errorMessage =
       error instanceof Error ? error.message : "알 수 없는 오류";
     console.error("Error fetching post:", errorMessage);
@@ -64,11 +64,12 @@ export async function GET(request: Request, context: any) {
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { department: string; major: string; postId: string } }
-) {
-  const { department, major, postId } = params;
+export async function DELETE(request: Request, context: any) {
+  const { department, major, postId } = context.params as {
+    department: string;
+    major: string;
+    postId: string;
+  };
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
@@ -100,7 +101,7 @@ export async function DELETE(
     }
 
     return NextResponse.json({ message: "게시글 삭제 성공" });
-  } catch (error) {
+  } catch (error: unknown) {
     const errorMessage =
       error instanceof Error ? error.message : "알 수 없는 오류";
     console.error("Error deleting post:", errorMessage);
