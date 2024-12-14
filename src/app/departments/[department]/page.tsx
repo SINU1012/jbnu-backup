@@ -2,18 +2,17 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { departments } from "@/data/departments";
 
-interface Params {
-  department: string;
-}
-
 const deptNameMap: Record<string, string> = {
   humanities: "인문대학",
   science: "자연과학대학",
   agriculture: "농생명대학",
 };
 
-// 여기서는 async가 필요하지 않습니다. 비동기 작업이 없다면 제거하세요.
-export default function DepartmentPage({ params }: { params: Params }) {
+export default function DepartmentPage({
+  params,
+}: {
+  params: { department: string };
+}) {
   const { department } = params;
 
   const deptMajors = departments[department as keyof typeof departments];

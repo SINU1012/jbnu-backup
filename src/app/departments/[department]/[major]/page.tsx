@@ -2,15 +2,11 @@ import { notFound } from "next/navigation";
 import { departments } from "@/data/departments";
 import MajorClientPage from "./MajorClientPage";
 
-interface Params {
-  department: string;
-  major: string;
-}
-
-// 필요 시 사용
-// export const dynamic = "force-dynamic";
-
-export default function MajorPage({ params }: { params: Params }) {
+export default function MajorPage({
+  params,
+}: {
+  params: { department: string; major: string };
+}) {
   const { department, major } = params;
 
   const deptData = departments[department as keyof typeof departments];
