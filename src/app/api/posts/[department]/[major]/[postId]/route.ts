@@ -4,10 +4,6 @@ import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { departments } from "@/data/departments";
 
-interface Params {
-  params: { department: string; major: string; postId: string };
-}
-
 function validateDeptAndMajor(department: string, major: string) {
   const deptMajors = departments[department as keyof typeof departments];
   if (!deptMajors || !deptMajors.some((m) => m.slug === major)) {
@@ -16,7 +12,10 @@ function validateDeptAndMajor(department: string, major: string) {
   return true;
 }
 
-export async function GET(request: Request, { params }: Params) {
+export async function GET(
+  request: Request,
+  { params }: { params: { department: string; major: string; postId: string } }
+) {
   const { department, major, postId } = params;
 
   if (!validateDeptAndMajor(department, major)) {
@@ -68,7 +67,10 @@ export async function GET(request: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(request: Request, { params }: Params) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { department: string; major: string; postId: string } }
+) {
   const { department, major, postId } = params;
 
   if (!validateDeptAndMajor(department, major)) {
