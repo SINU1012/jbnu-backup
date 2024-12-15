@@ -5,9 +5,9 @@ import MajorClientPage from "./MajorClientPage";
 export default function MajorPage({
   params,
 }: {
-  params: { department: string; major: string };
+  params: Record<string, string>;
 }) {
-  const { department, major } = params;
+  const { department, major } = params as { department: string; major: string };
 
   const deptData = departments[department as keyof typeof departments];
   if (!deptData) {
