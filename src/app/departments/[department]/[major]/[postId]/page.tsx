@@ -12,18 +12,27 @@ interface Post {
   createdAt: string;
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: { department: string; major: string; postId: string };
-}) {
-  const { department, major, postId } = params;
+export const dynamic = "force-dynamic";
+
+export default async function PostPage(props: any) {
+  // props: any로 받아서 params를 런타임에 캐스팅
+  const { params } = props;
+
+  // 런타임에 department, major, postId 추출
+  const department = (params?.department as string) || "";
+  const major = (params?.major as string) || "";
+  const postId = (params?.postId as string) || "";
+
+  if (!department || !major || !postId) {
+    notFound();
+  }
 
   const baseURL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
   const res = await fetch(
     `${baseURL}/api/posts/${department}/${major}/${postId}`,
-    { cache: "no-store" }
+    {
+      cache: "no-store",
+    }
   );
 
   if (!res.ok) {

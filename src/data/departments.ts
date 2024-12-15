@@ -28,7 +28,8 @@ export const departments = {
   ],
   agriculture: [
     { slug: "agricultural-biology", name: "농생물학과" },
-    { slug: "agricultural-economics-distribution", name: "농경제유통학부" },
+    { slug: "agricultural-economics", name: "농경제유통학(농업경제학)" },
+    { slug: "food-distribution", name: "농경제유통학(식품유통학)" },
     { slug: "animal-bioscience", name: "동물생명공학과" },
     { slug: "animal-resource-science", name: "동물자원과학과" },
     { slug: "wood-applied-science", name: "목재응용과학과" },
@@ -44,6 +45,6 @@ export const departments = {
     { slug: "landscape-architecture", name: "조경학과" },
     { slug: "regional-construction-engineering", name: "지역건설공학과" },
     { slug: "bio-resource-convergence", name: "생명자원융합학과" },
-    { slug: "agro-livestock-food-convergence", name: "농축산식품융합학과" },
+    { slug: "smart-farm", name: "스마트팜학과" },
   ],
 } as const;

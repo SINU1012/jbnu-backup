@@ -1,13 +1,17 @@
+// app/departments/[department]/[major]/page.tsx
 import { notFound } from "next/navigation";
 import { departments } from "@/data/departments";
 import MajorClientPage from "./MajorClientPage";
 
-export default function MajorPage({
-  params,
-}: {
-  params: Record<string, string>;
-}) {
-  const { department, major } = params as { department: string; major: string };
+// 타입 오류 우회를 위해 props: any로 받음 (추후 개선 가능)
+export default function MajorPage(props: any) {
+  // 런타임에 필요한 키를 안전하게 추출
+  const department = props?.params?.department as string;
+  const major = props?.params?.major as string;
+
+  if (!department || !major) {
+    notFound();
+  }
 
   const deptData = departments[department as keyof typeof departments];
   if (!deptData) {

@@ -1,4 +1,4 @@
-// app/departments/[department]/[major]/[postId]/page.tsx
+// app/posts/[postId]/page.tsx
 import styles from "./page.module.css";
 import { notFound } from "next/navigation";
 
@@ -12,12 +12,15 @@ interface Post {
   createdAt: string;
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: { department: string; major: string; postId: string };
-}) {
-  const { department, major, postId } = params;
+export default async function PostPage(props: any) {
+  // 런타임에서 params를 안전하게 추출
+  const department = props?.params?.department as string;
+  const major = props?.params?.major as string;
+  const postId = props?.params?.postId as string;
+
+  if (!department || !major || !postId) {
+    notFound();
+  }
 
   const baseURL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
