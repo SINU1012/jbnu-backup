@@ -11,8 +11,6 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
-  // 필요하다면 추가적인 메타데이터 설정 가능
-  // 예: openGraph, twitter, themeColor 등
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -26,6 +24,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           >
             JBNU Archive
           </Link>
+          {/* 우측 상단 네비게이션 제거 
           <nav className="flex gap-4">
             <Link
               href="/departments/humanities"
@@ -46,6 +45,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               농생명대학
             </Link>
           </nav>
+          */}
         </header>
         <main className="flex-1 p-4">{children}</main>
         <footer className="bg-white border-t border-gray-200 p-4 text-center text-sm text-gray-500">

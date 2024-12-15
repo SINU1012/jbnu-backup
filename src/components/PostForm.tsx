@@ -13,7 +13,7 @@ interface PostFormProps {
     fileUrls: string[];
   }) => Promise<void>;
   onCancel: () => void;
-  onPostCreated?: () => Promise<void>; // 필요하다면 추가
+  onPostCreated?: () => Promise<void>;
 }
 
 export default function PostForm({
@@ -52,7 +52,6 @@ export default function PostForm({
       setContent("");
       setFiles(null);
 
-      // 게시글 작성 완료 후 onPostCreated가 있다면 호출
       if (onPostCreated) {
         await onPostCreated();
       }

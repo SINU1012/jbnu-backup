@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import PostForm from "@/components/PostForm";
+import Link from "next/link";
 
 interface ClientWrapperProps {
   department: string;
@@ -48,7 +49,6 @@ export default function ClientWrapper({
     fetchPosts();
   }, [fetchPosts]);
 
-  // 게시글 작성 제출 함수
   const handlePostSubmit = async (postData: {
     title: string;
     content: string;
@@ -63,7 +63,6 @@ export default function ClientWrapper({
       const json = await res.json();
       if (res.ok) {
         console.log("게시글 작성 성공");
-        // 게시글 작성 성공 후 목록 다시 불러오기
         await fetchPosts();
       } else {
         console.error(json.error || "게시글 생성 실패");
@@ -73,10 +72,32 @@ export default function ClientWrapper({
     }
   };
 
-  // 취소 버튼 클릭 시 동작 (현재는 별도 동작 없음)
   const handleCancel = () => {
-    // 필요하다면 여기서 form 초기화 로직을 실행하거나 다른 동작 수행
     console.log("작성 취소");
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    if (!confirm("정말 이 게시글을 삭제하시겠습니까?")) return;
+    try {
+      // 단일 게시글 삭제는 postId만으로 삭제
+      // department, major는 postId만으로 식별 가능?
+      // 여기서는 단일 게시글 삭제를 위한 api 변경 필요
+      // 하지만 이전에 구현한 코드에서는 postId만으로 삭제 가능했음.
+      // 실제로는 department, major 필요하나 여기서는 postId전용 api없으면 필요함.
+      // 만약 단일 삭제 API가 /api/posts/[postId]만 있다면:
+      const res = await fetch(`/api/posts/${department}/${major}/${postId}`, {
+        method: "DELETE",
+      });
+      const json = await res.json();
+      if (res.ok) {
+        console.log("게시글 삭제 성공");
+        await fetchPosts();
+      } else {
+        console.error(json.error || "게시글 삭제 실패");
+      }
+    } catch (err) {
+      console.error("Error deleting post:", err);
+    }
   };
 
   return (
@@ -99,24 +120,37 @@ export default function ClientWrapper({
               <h3 className="font-bold text-lg mb-2">{post.title}</h3>
               <p className="text-sm text-gray-700 mb-2">{post.content}</p>
               {post.fileUrls.length > 0 && (
-                <ul className="list-disc pl-5 space-y-1">
+                <ul className="list-disc pl-5 space-y-1 mb-2">
                   {post.fileUrls.map((url, idx) => (
                     <li key={idx}>
                       <a
                         href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        download
                         className="text-blue-600 underline"
                       >
-                        첨부파일 {idx + 1}
+                        첨부파일 {idx + 1} 다운로드
                       </a>
                     </li>
                   ))}
                 </ul>
               )}
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="text-xs text-gray-400 mb-2">
                 작성일: {new Date(post.createdAt).toLocaleString()}
               </p>
+              <div className="flex space-x-2">
+                <Link
+                  href={`/departments/${department}/${major}/${post._id}`}
+                  className="text-blue-600 underline text-sm"
+                >
+                  상세보기
+                </Link>
+                <button
+                  onClick={() => handleDeletePost(post._id)}
+                  className="text-red-600 underline text-sm"
+                >
+                  삭제
+                </button>
+              </div>
             </li>
           ))}
         </ul>

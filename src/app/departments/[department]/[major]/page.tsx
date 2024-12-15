@@ -2,12 +2,12 @@ import { notFound } from "next/navigation";
 import { departments } from "@/data/departments";
 import MajorClientPage from "./MajorClientPage";
 
-export default function MajorPage(props: any) {
-  // 여기서 캐스팅을 통해 타입을 명시적으로 선언
-  const { department, major } = props.params as {
-    department: string;
-    major: string;
-  };
+export default function MajorPage({
+  params,
+}: {
+  params: { department: string; major: string };
+}) {
+  const { department, major } = params;
 
   const deptData = departments[department as keyof typeof departments];
   if (!deptData) {

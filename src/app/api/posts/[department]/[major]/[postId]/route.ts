@@ -8,10 +8,8 @@ function validateDeptAndMajor(department: string, major: string): boolean {
   return !!(deptMajors && deptMajors.some((m) => m.slug === major));
 }
 
-// params 타입 정의 제거, 런타임에 as로 단언
 export async function GET(request: Request, context: any) {
-  const { params } = context;
-  const { department, major, postId } = params as {
+  const { department, major, postId } = context.params as {
     department: string;
     major: string;
     postId: string;
@@ -35,6 +33,7 @@ export async function GET(request: Request, context: any) {
     const client = await clientPromise;
     const db = client.db("tlsdn1012");
     const collection = db.collection("posts");
+
     const query = { _id: new ObjectId(postId), department, major };
     const post = await collection.findOne(query);
 
@@ -66,8 +65,7 @@ export async function GET(request: Request, context: any) {
 }
 
 export async function DELETE(request: Request, context: any) {
-  const { params } = context;
-  const { department, major, postId } = params as {
+  const { department, major, postId } = context.params as {
     department: string;
     major: string;
     postId: string;

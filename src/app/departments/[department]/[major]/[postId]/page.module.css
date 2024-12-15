@@ -1,0 +1,22 @@
+.container {
+  padding: 20px;
+}
+.title {
+  margin-bottom: 20px;
+}
+.section {
+  margin-bottom: 20px;
+}
+.sectionHeader {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.sectionBody {
+  background-color: #f9f9f9;
+  padding: 10px;
+}
+.fileList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

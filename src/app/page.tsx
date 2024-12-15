@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const PASSWORDS: Record<string, string> = {
-  humanities: "humanities123",
-  science: "science123",
-  agriculture: "agri123",
+  humanities: "1225",
+  science: "2533",
+  agriculture: "5541",
 };
 
 export default function HomePage() {

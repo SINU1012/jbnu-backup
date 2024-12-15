@@ -1,16 +1,16 @@
-// app/api/posts/[department]/[major]/route.ts
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { departments } from "@/data/departments";
 
 interface Post {
+  _id?: ObjectId;
   department: string;
   major: string;
   title: string;
   content: string;
   fileUrls: string[];
-  createdAt?: string;
+  createdAt: string;
 }
 
 function validateDeptAndMajor(department: string, major: string): boolean {
@@ -19,8 +19,10 @@ function validateDeptAndMajor(department: string, major: string): boolean {
 }
 
 export async function GET(request: Request, context: any) {
-  const department = context.params.department as string;
-  const major = context.params.major as string;
+  const { department, major } = context.params as {
+    department: string;
+    major: string;
+  };
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
@@ -58,8 +60,10 @@ export async function GET(request: Request, context: any) {
 }
 
 export async function POST(request: Request, context: any) {
-  const department = context.params.department as string;
-  const major = context.params.major as string;
+  const { department, major } = context.params as {
+    department: string;
+    major: string;
+  };
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
@@ -108,8 +112,10 @@ export async function POST(request: Request, context: any) {
 }
 
 export async function DELETE(request: Request, context: any) {
-  const department = context.params.department as string;
-  const major = context.params.major as string;
+  const { department, major } = context.params as {
+    department: string;
+    major: string;
+  };
 
   if (!validateDeptAndMajor(department, major)) {
     return NextResponse.json(
